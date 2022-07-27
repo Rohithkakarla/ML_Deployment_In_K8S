@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: model1
+  labels:
+    app: model1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: model1
+  template:
+    metadata:
+      labels:
+        app: model1
+    spec:
+      containers:
+      - name: model1
+        image: python
+        ports:
+          - containerPort: 5000
+        command:
+          - sh
+          - "-c"
+          - |
+              cd /tmp
+              git --version
+              git clone https://github.com/Rohithkakarla/githubcsvupdate.git
+              ls
+              cd githubcsvupdate
+              pip install -r requirements.txt
+              python Flask.py
+        volumeMounts:
+          - name: workdir
+            mountPath: /tmp
+        env:
+          - name: WEB
+            value:
+      volumes:
+        - name: workdir
+          emptyDir: {}

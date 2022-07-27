@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: model1
+spec:
+  ports:
+  - port: 5000
+    name: model1
+    protocol: TCP
+    targetPort: 5000
+  selector:
+    app: model1
+  type: LoadBalancer

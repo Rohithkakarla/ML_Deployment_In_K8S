@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: model
+  labels:
+    app: model
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: model
+  template:
+    metadata:
+      labels:
+        app: model
+    spec:
+      containers:
+      - name: model1
+        image: python
+        ports:
+          - containerPort: 5000
+        command:
+          - sh
+          - "-c"
+          - | 
+              cd /tmp
+              ls
+              cd githubcsvupdate
+              pip install -r requirements.txt
+              python3 Flask.py
+        volumeMounts:
+          - name: workdir
+            mountPath: /tmp
+        env:
+          - name: WEB
+            value:
+      initContainers:
+        - name: git
+          image: bitnami/git
+          command:
+            - sh
+            - "-c"
+            - |
+                cd /tmp
+                git --version
+                git clone https://github.com/Rohithkakarla/githubcsvupdate.git
+          volumeMounts:
+            - name: workdir
+              mountPath: "/tmp"
+          env:
+            - name: HELLO
+              value:
+      volumes:
+        - name: workdir
+          emptyDir: {}
